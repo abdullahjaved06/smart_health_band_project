@@ -1,233 +1,82 @@
-.. _peripheral_lbs:
+Smart Health Band Firmware
+This repository contains the firmware for a smart health band built on the nRF52840 SoC using Zephyr RTOS. The firmware integrates multiple sensors for accurate health monitoring, including the TMP117 temperature sensor, BMI270 IMU sensor, and MAX30101 optical sensor. Additionally, it supports over-the-air (OTA) updates via Bluetooth Low Energy (BLE).
 
-Bluetooth: Peripheral LBS
-#########################
+Features
+TMP117: Temperature sensor for accurate body temperature readings.
 
-.. contents::
-   :local:
-   :depth: 2
+BMI270: 6-DoF IMU sensor (accelerometer and gyroscope) for motion and orientation tracking.
 
-The peripheral LBS sample demonstrates how to use the :ref:`lbs_readme`.
+MAX30101: Optical sensor for measuring heart rate and SpO2 (blood oxygen saturation).
+
+BLE Support: Transmit sensor data wirelessly to a smartphone or tablet for real-time monitoring.
+
+OTA Updates: Ability to update the firmware over-the-air for future enhancements or bug fixes.
 
 Requirements
-************
+Hardware
+nRF52840 SoC (such as a development kit or custom board)
 
-The sample supports the following development kits:
+TMP117 Temperature Sensor
 
-.. table-from-sample-yaml::
+BMI270 IMU Sensor
 
-.. include:: /includes/tfm.txt
+MAX30101 Optical Heart Rate and SpO2 Sensor
 
-The sample also requires a smartphone or tablet running a compatible mobile application.
-The `Testing`_ instructions refer to `nRF Connect for Mobile`_, but you can also use other similar applications (for example, `nRF Blinky`_ or `nRF Toolbox`_).
+Software
+Zephyr RTOS: The firmware is built using Zephyr RTOS. The Zephyr toolchain and dependencies are required to build and flash the firmware.
 
-.. note::
-   |thingy53_sample_note|
+nRF Connect for Mobile or similar BLE-enabled mobile applications to interact with the device and display health data.
 
-Overview
-********
+Getting Started
+Clone the Repository:
 
-You can use the sample to transmit the button state from your development kit to another device.
+bash
+Copy
+git clone https://github.com/yourusername/smart-health-band.git
+cd smart-health-band
+Set Up Zephyr:
+Follow the Zephyr setup guide: Zephyr Getting Started.
 
-.. tabs::
+Build the Firmware:
+Use the following command to build the firmware for your nRF52840 board:
 
-   .. group-tab:: nRF52 and nRF53 DKs
+bash
+Copy
+west build -b nrf52840dk_nrf52840
+Flash the Device:
+After building, flash the firmware onto your nRF52840 board:
 
-      When connected, the sample sends the state of **Button 1** on the development kit to the connected device, such as a phone or tablet.
-      The mobile application on the device can display the received button state and control the state of **LED 3** on the development kit.
+bash
+Copy
+west flash
+Test the Device:
 
-   .. group-tab:: nRF54 DKs
+Open the nRF Connect for Mobile app on your smartphone or tablet.
 
-      When connected, the sample sends the state of **Button 0** on the development kit to the connected device, such as a phone or tablet.
-      The mobile application on the device can display the received button state and control the state of **LED 2** on the development kit.
+Scan for your device and connect to it.
 
-You can also use this sample to control the color of the RGB LED on the nRF52840 Dongle or Thingy:53.
+The app will display the heart rate, SpO2, and temperature readings in real-time.
 
-User interface
-**************
+OTA Updates
+The firmware supports over-the-air (OTA) updates via Bluetooth. This means you can update the health band's firmware without needing to connect it via a physical interface.
 
-The user interface of the sample depends on the hardware platform you are using.
-
-.. tabs::
-
-   .. group-tab:: nRF52 and nRF53 DKs
-
-      LED 1:
-         Blinks when the main loop is running (that is, the device is advertising) with a period of two seconds, duty cycle 50%.
-
-      LED 2:
-         Lit when the development kit is connected.
-
-      LED 3:
-         Lit when the development kit is controlled remotely from the connected device.
-
-      Button 1:
-         Send a notification with the button state: "pressed" or "released".
-
-   .. group-tab:: nRF54 DKs
-
-      LED 0:
-         Blinks when the main loop is running (that is, the device is advertising) with a period of two seconds, duty cycle 50%.
-
-      LED 1:
-         Lit when the development kit is connected.
-
-      LED 2:
-         Lit when the development kit is controlled remotely from the connected device.
-
-      Button 0:
-         Send a notification with the button state: "pressed" or "released".
-
-   .. group-tab:: Thingy:53
-
-      RGB LED:
-         The RGB LED channels are used independently to display the following information:
-
-         * Red - If the main loop is running (that is, the device is advertising).
-           The LED blinks with a period of two seconds, duty cycle 50%.
-         * Green - If the device is connected.
-         * Blue - If user set the LED using Nordic LED Button Service.
-
-         For example, if Thingy:53 is connected over Bluetooth, the LED color toggles between green and yellow.
-         The green LED channel is kept on and the red LED channel is blinking.
-
-      Button 1:
-         Send a notification with the button state: "pressed" or "released".
-
-   .. group-tab:: nRF52840 Dongle
-
-      Green LED:
-         Blinks, toggling on/off every second, when the main loop is running and the device is advertising.
-
-      RGB LED:
-         The RGB LED channels are used independently to display the following information:
-
-         * Red - If Dongle is connected.
-         * Green - If user set the LED using Nordic LED Button Service.
-
-      Button 1:
-         Send a notification with the button state: "pressed" or "released".
-
-Building and running
-********************
-
-.. |sample path| replace:: :file:`samples/bluetooth/peripheral_lbs`
-
-.. include:: /includes/build_and_run_ns.txt
-
-.. include:: /includes/nRF54H20_erase_UICR.txt
-
-.. note::
-   |54H_engb_2_8|
-
-Minimal build
-=============
-
-You can build the sample with a minimum configuration as a demonstration of how to reduce code size and RAM usage, using the ``-DFILE_SUFFIX=minimal`` flag in your build.
-
-See :ref:`cmake_options` for instructions on how to add this option to your build.
-For example, when building on the command line, you can add the option as follows:
-
-.. code-block:: console
-
-   west build samples/bluetooth/peripheral_lbs -- -DFILE_SUFFIX=minimal
-
-.. _peripheral_lbs_testing:
-
-Testing
-=======
-
-After programming the sample to your dongle or development kit, one of the LEDs starts blinking to indicate that the advertising loop is active (see `User interface`_ for details).
-
-To test the sample using the `nRF Connect for Mobile`_ application, complete the following steps:
-
-.. tabs::
-
-   .. group-tab:: nRF52 and nRF53 DKs
-
-      1. Install and start the `nRF Connect for Mobile`_ application on your smartphone or tablet.
-      #. Power on the development kit or insert your dongle into the USB port.
-      #. Connect to the device from the application.
-         The device is advertising as ``Nordic_LBS``.
-         The services of the connected device are shown.
-      #. In **Nordic LED Button Service**, enable notifications for the **Button** characteristic.
-      #. Press **Button 1** on the device.
-      #. Observe that notifications with the following values are displayed:
-
-         * ``Button released`` when **Button 1** is released.
-         * ``Button pressed`` when **Button 1** is pressed.
-
-      #. Write the following values to the LED characteristic in the **Nordic LED Button Service**.
-         Depending on the hardware platform, this produces results described in the table.
-
-         +------------------------+---------+----------------------------------------------+
-         | Hardware platform      | Value   | Effect                                       |
-         +========================+=========+==============================================+
-         | nRF52 and nRF53 DKs    | ``OFF`` | Switch the **LED 3** off.                    |
-         +                        +---------+----------------------------------------------+
-         |                        | ``ON``  | Switch the **LED 3** on.                     |
-         +------------------------+---------+----------------------------------------------+
-         | nRF52840 Dongle        | ``OFF`` | Switch the green channel of the RGB LED off. |
-         +                        +---------+----------------------------------------------+
-         |                        | ``ON``  | Switch the green channel of the RGB LED on.  |
-         +------------------------+---------+----------------------------------------------+
-         | Thingy:53              | ``OFF`` | Switch the blue channel of the RGB LED off.  |
-         +                        +---------+----------------------------------------------+
-         |                        | ``ON``  | Switch the blue channel of the RGB LED on.   |
-         +------------------------+---------+----------------------------------------------+
-
-   .. group-tab:: nRF54 DKs
-
-      .. note::
-          |nrf54_buttons_leds_numbering|
-
-      1. Install and start the `nRF Connect for Mobile`_ application on your smartphone or tablet.
-      #. Power on the development kit or insert your dongle into the USB port.
-      #. Connect to the device from the application.
-         The device is advertising as ``Nordic_LBS``.
-         The services of the connected device are shown.
-      #. In **Nordic LED Button Service**, enable notifications for the **Button** characteristic.
-      #. Press **Button 0** on the device.
-      #. Observe that notifications with the following values are displayed:
-
-         * ``Button released`` when **Button 0** is released.
-         * ``Button pressed`` when **Button 0** is pressed.
-
-      #. Write the following values to the LED characteristic in the **Nordic LED Button Service**.
-         Depending on the hardware platform, this produces results described in the table.
-
-         +------------------------+---------+----------------------------------------------+
-         | Hardware platform      | Value   | Effect                                       |
-         +========================+=========+==============================================+
-         | nRF54 DKs              | ``OFF`` | Switch the **LED 2** off.                    |
-         +                        +---------+----------------------------------------------+
-         |                        | ``ON``  | Switch the **LED 2** on.                     |
-         +------------------------+---------+----------------------------------------------+
-
+To perform an OTA update, use the nRF Connect for Mobile app or any compatible BLE tool that supports OTA updates for Zephyr-based devices.
 
 Dependencies
-************
+This project uses the following Zephyr libraries:
 
-This sample uses the following |NCS| libraries:
+Bluetooth API for BLE communication.
 
-* :ref:`lbs_readme`
-* :ref:`dk_buttons_and_leds_readme`
+Sensor API for interfacing with the TMP117, BMI270, and MAX30101 sensors.
 
-In addition, it uses the following Zephyr libraries:
+Logging for debugging and real-time data output.
 
-* :file:`include/zephyr/types.h`
-* :file:`lib/libc/minimal/include/errno.h`
-* :file:`include/sys/printk.h`
-* :file:`include/sys/byteorder.h`
-* :ref:`GPIO Interface <zephyr:api_peripherals>`
-* :ref:`zephyr:bluetooth_api`:
+Troubleshooting
+Ensure that all sensors are correctly connected to the nRF52840 SoC.
 
-  * :file:`include/bluetooth/bluetooth.h`
-  * :file:`include/bluetooth/hci.h`
-  * :file:`include/bluetooth/conn.h`
-  * :file:`include/bluetooth/uuid.h`
-  * :file:`include/bluetooth/gatt.h`
+Verify the correct I²C or SPI configurations for the sensors in the devicetree.
 
-The sample also uses the following secure firmware component:
+If you encounter issues with BLE communication, make sure the nRF Connect for Mobile app is updated to the latest version.
 
-* :ref:`Trusted Firmware-M <ug_tfm>`
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
