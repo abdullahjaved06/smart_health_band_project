@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "bluetooth.h": "c",
+        "uuid.h": "c",
+        "tmp117.h": "c",
+        "bmi270.h": "c",
+        "max30101.h": "c"
+    }
+}

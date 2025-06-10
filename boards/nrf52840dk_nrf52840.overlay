@@ -1,0 +1,29 @@
+
+
+&i2c0 {
+    status = "okay";
+    pinctrl-0 = <&i2c0_default>;
+	pinctrl-1 = <&i2c0_sleep>;
+    tmp117:tmp117@48 {
+        compatible = "ti,tmp116";
+        reg = <0x48>;
+        label = "TMP117";
+    };
+    bmi270: bmi270@68 {
+        compatible = "bosch,bmi270";
+        reg = <0x68>;  // Default I²C address if SDO is tied low
+        label = "BMI270";
+        // int-gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;  // Replace with actual interrupt pin
+    };
+     max30101:max30101@57 {
+        compatible = "maxim,max30101";
+        reg = <0x57>;  // I2C address for MAX30101
+        label = "MAX30101";
+        interrupt-parent = <&gpio0>;
+        // interrupt = <10 GPIO_ACTIVE_HIGH>;  // Example interrupt pin
+    };
+};
+
+
+
+
